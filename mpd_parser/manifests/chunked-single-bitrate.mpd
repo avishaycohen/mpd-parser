@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" availabilityStartTime="1970-01-01T00:00:00Z" id="Config part of url maybe?" maxSegmentDuration="PT8S" minBufferTime="PT1S" minimumUpdatePeriod="P100Y" profiles="urn:mpeg:dash:profile:full:2011,http://www.dashif.org/guidelines/low-latency-live-v5" publishTime="2022-02-16T14:58:53Z" timeShiftBufferDepth="PT5M" type="dynamic">
+ <BaseURL>https://livesim.dashif.org/livesim/sts_1645023533/sid_c2d9e37b/chunkdur_1/ato_7/testpic4_8s/</BaseURL>
+<ServiceDescription id="0">
+<Latency max="6000" min="2000" referenceId="0" target="4000" />
+<PlaybackRate max="1.04" min="0.96" />
+</ServiceDescription>
+<Period id="p0" start="PT0S">
+  <AdaptationSet contentType="audio" lang="eng" segmentAlignment="true">
+   <ProducerReferenceTime id="0" presentationTime="0" type="encoder" wallClockTime="1970-01-01T00:00:00">
+<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014" value="http://time.akamai.com/?iso" />
+</ProducerReferenceTime>
+<SegmentTemplate availabilityTimeComplete="false" availabilityTimeOffset="7.000000" duration="384000" initialization="$RepresentationID$/init.mp4" media="$RepresentationID$/$Number$.m4s" startNumber="0" timescale="48000" />
+   <Representation audioSamplingRate="48000" bandwidth="36997" codecs="mp4a.40.2" id="A48" mimeType="audio/mp4" startWithSAP="1">
+    <AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2" />
+   </Representation>
+  </AdaptationSet>
+  <AdaptationSet contentType="video" maxFrameRate="30" maxHeight="720" maxWidth="1280" par="16:9" segmentAlignment="true">
+   <ProducerReferenceTime id="0" presentationTime="0" type="encoder" wallClockTime="1970-01-01T00:00:00">
+<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014" value="http://time.akamai.com/?iso" />
+</ProducerReferenceTime>
+<SegmentTemplate availabilityTimeComplete="false" availabilityTimeOffset="7.000000" duration="122880" initialization="$RepresentationID$/init.mp4" media="$RepresentationID$/$Number$.m4s" startNumber="0" timescale="15360" />
+   <Representation bandwidth="303780" codecs="avc1.64001e" frameRate="30" height="360" id="V300" mimeType="video/mp4" sar="1:1" startWithSAP="1" width="640" />
+   <Representation bandwidth="603844" codecs="avc1.64001e" frameRate="30" height="360" id="V600" mimeType="video/mp4" sar="1:1" startWithSAP="1" width="640" />
+   <Representation bandwidth="1203833" codecs="avc1.64001f" frameRate="30" height="540" id="V1200" mimeType="video/mp4" sar="1:1" startWithSAP="1" width="960" />
+   <Representation bandwidth="2403767" codecs="avc1.64001f" frameRate="30" height="720" id="V2400" mimeType="video/mp4" sar="1:1" startWithSAP="1" width="1280" />
+  </AdaptationSet>
+ </Period>
+<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014" value="http://time.akamai.com/?iso" />
+</MPD>

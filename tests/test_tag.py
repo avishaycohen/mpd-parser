@@ -51,8 +51,7 @@ def test_base_url_tag(xml_snippet, expected):
 
 def test_utc_timing_tag():
     """ test utc timing tag"""
-    utc_xml = '<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014"' \
-              'value="https://time.akamai.com/?iso" />'
+    utc_xml = '<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014" value="https://time.akamai.com/?iso"/>'
     element = etree.fromstring(utc_xml)
     utc_timing = UTCTiming(element)
     assert utc_timing.scheme_id_uri == 'urn:mpeg:dash:utc:http-iso:2014'

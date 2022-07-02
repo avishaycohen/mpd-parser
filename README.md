@@ -19,8 +19,10 @@
 5. push to github
 6. push package to pypi
 7. add github actions
-   1. pylint
+   1. ~~pylint~~
    2. pytest
+   3. build package
+   4. push package
 8. complete unit-tests
 9. refactor tags to multiple files
 10. add parsing from file
@@ -79,4 +81,6 @@ python -m build
 ```
 ### Run pylint locally
 I try to keep the pylint score above 9.
+```shell
 python -m pylint ./mpd_parser/
+```

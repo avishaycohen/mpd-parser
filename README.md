@@ -1,4 +1,5 @@
 # mpd-parser
+
 ## Installation
 ```shell
 $ python -m pip install mpd-parser
@@ -54,7 +55,7 @@ python -m build
 I try to keep the pylint score above 9.
 ```shell
 python -m pylint ./mpd_parser/
-```
+
 ## TODO
 1. ~~finish working on periods and sub tags~~
    1. ~~periods~~

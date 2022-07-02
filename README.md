@@ -1,33 +1,4 @@
 # mpd-parser
-## TODO
-1. ~~finish working on periods and sub tags~~
-   1. ~~periods~~
-   2. ~~adapt-sets~~
-   3. ~~segment bases~~
-   4. ~~segment lists~~
-   5. ~~segment templates~~
-   6. ~~asset ids~~
-   7. ~~event streams~~
-   8. ~~subsets~~
-2. ~~create package locally~~
-3. ~~test it~~
-4. complete readme
-   1. ~~installation~~
-   2. ~~usage~~
-   3. Benchmarks
-   4. contributing
-5. push to github
-6. push package to pypi
-7. add github actions
-   1. ~~pylint~~
-   2. pytest
-   3. build package
-   4. push package
-8. complete unit-tests
-9. refactor tags to multiple files
-10. add parsing from file
-11. add parsing from URL
-
 
 ## Installation
 ```shell
@@ -36,6 +7,7 @@ $ python -m pip install mpd-parser
 
 ## Usage
 ### Importing
+
 ```python
 from mpd_parser.parser import Parser
 ```
@@ -74,13 +46,44 @@ These are what I used to test and benchmark the package.
 
 ## Contributing
 TBA
+
 ### Build locally
 ```shell
-cd ./mpd_parser
 python -m build
 ```
 ### Run pylint locally
 I try to keep the pylint score above 9.
 ```shell
 python -m pylint ./mpd_parser/
-```
+
+## TODO
+1. ~~finish working on periods and sub tags~~
+   1. ~~periods~~
+   2. ~~adapt-sets~~
+   3. ~~segment bases~~
+   4. ~~segment lists~~
+   5. ~~segment templates~~
+   6. ~~asset ids~~
+   7. ~~event streams~~
+   8. ~~subsets~~
+2. ~~create package locally~~
+3. ~~test it~~
+4. complete readme
+   1. ~~installation~~
+   2. ~~usage~~
+   3. Benchmarks
+   4. contributing
+5. push to github
+6. push package to pypi
+7. add github actions
+   1. ~~pylint~~
+   2. pytest
+   3. build package
+   4. push package
+      1. add tokens to secrets
+      2. build+push to test-pypi first
+      3. build+push to pypi if test success
+8. complete unit-tests
+9. refactor tags to multiple files
+10. add parsing from file
+11. add parsing from URL

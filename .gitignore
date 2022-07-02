@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-mpd_parser/dist/
+dist/
 downloads/
 eggs/
 .eggs/

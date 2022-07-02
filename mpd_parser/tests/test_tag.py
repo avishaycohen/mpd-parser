@@ -9,6 +9,7 @@ from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming
 
 
 def test_program_info_tag():
+    """ Test program info tag """
     program_file_xml = """
      <ProgramInformation lang="some-lang" moreInformationURL="website">
       <Title>MultiRate</Title>
@@ -31,7 +32,8 @@ def test_program_info_tag():
          'base_url_value':           'bunny_46980bps/BigBuckBunny_1snonSeg.mp4',
          'availability_time_offset': math.inf
      }),
-    ("""<BaseURL availabilityTimeComplete="false" availabilityTimeOffset="7.000000">some-other-url</BaseURL>""",
+    ('<BaseURL availabilityTimeComplete="false" availabilityTimeOffset="7.000000">' \
+     'some-other-url</BaseURL>',
      {
          'base_url_value':             'some-other-url',
          'availability_time_offset':   7.000000,
@@ -39,6 +41,7 @@ def test_program_info_tag():
      })
 ])
 def test_base_url_tag(xml_snippet, expected):
+    """ test base url tag """
     element = etree.fromstring(xml_snippet)
     base_url = BaseURL(element)
     assert base_url.base_url_value == expected.get('base_url_value')
@@ -47,7 +50,9 @@ def test_base_url_tag(xml_snippet, expected):
 
 
 def test_utc_timing_tag():
-    utc_xml = """<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014" value="https://time.akamai.com/?iso" />"""
+    """ test utc timing tag"""
+    utc_xml = '<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-iso:2014"' \
+              'value="https://time.akamai.com/?iso" />'
     element = etree.fromstring(utc_xml)
     utc_timing = UTCTiming(element)
     assert utc_timing.scheme_id_uri == 'urn:mpeg:dash:utc:http-iso:2014'

@@ -21,14 +21,10 @@
 7. add github actions
    1. pylint
    2. pytest
-      1. test using different python versions
-         1. 3.7
-         2. 3.8
-         3. 3.9
 8. complete unit-tests
 9. refactor tags to multiple files
 10. add parsing from file
-11. aadd parsing from URL
+11. add parsing from URL
 
 
 ## Installation
@@ -61,6 +57,7 @@ mpegdash package has two distinct advantages over this package:
 2. it uses the classic DOM approach to parsing XML files. it is a well known standard.
 
 Currently, the package supports parsing only, not the creation or object->string conversion.
+
 ## Benchmarks
 TBA
 
@@ -73,6 +70,13 @@ These are what I used to test and benchmark the package.
 2. attribute parsers
 3. full manifest testing
 
-
 ## Contributing
 TBA
+### Build locally
+```shell
+cd ./mpd_parser
+python -m build
+```
+### Run pylint locally
+I try to keep the pylint score above 9.
+python -m pylint ./mpd_parser/

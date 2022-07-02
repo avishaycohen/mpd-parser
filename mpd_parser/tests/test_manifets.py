@@ -12,8 +12,8 @@ from mpd_parser.parser import Parser
 ])
 def test_mpd_tag(input_file):
     """ Test that parser works and create MPD object """
-    with open(input_file, mode="r") as f:
-        mpd_string = f.read()
+    with open(input_file, mode="r", encoding='UTF-8') as manifest_file:
+        mpd_string = manifest_file.read()
         mpd = Parser.from_string(mpd_string)
         assert mpd.id is None
         assert mpd.type == "static"

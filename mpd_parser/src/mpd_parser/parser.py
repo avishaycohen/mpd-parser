@@ -3,7 +3,6 @@ Main module of the package, Parser class
 """
 from re import Match, sub
 from lxml import etree
-from lxml.etree import Element
 
 from mpd_parser.exceptions import UnicodeDeclaredError
 from mpd_parser.tags import MPD
@@ -43,5 +42,5 @@ class Parser:
             root = etree.fromstring(manifest_as_string)
         except ValueError as err:
             if "Unicode" in err.args[0]:
-                raise UnicodeDeclaredError
+                raise UnicodeDeclaredError() from err
         return MPD(root, encoding=encoding[0].groups()[0])

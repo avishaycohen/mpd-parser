@@ -52,7 +52,7 @@ def get_bool_value(value: str) -> Optional[bool]:
     return None
 
 
-def get_int_value(value: str) -> int | None:
+def get_int_value(value: str) -> Optional[int]:
     """
         Helper to return int/none value
     this makes sure we are not returning a number when a tag/attrib

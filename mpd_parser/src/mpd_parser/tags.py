@@ -1,8 +1,11 @@
+# pylint: disable=missing-function-docstring
+
 """
 The tags module holds all the type of different nodes
 you may come across when parsing MPD manifest file.
 """
 from functools import cached_property
+from typing import Optional
 
 from lxml.etree import Element
 
@@ -59,7 +62,7 @@ class ContentProtection(Tag):
         return PSSH(self.element.attrib.get('cenc:pssh'))
 
 
-class RepresentationBase(Tag):
+class RepresentationBase(Tag):  # pylint: disable=too-many-public-methods
     """ Generic representation tag """
 
     @cached_property
@@ -258,7 +261,7 @@ class Representation(RepresentationBase):
                 self.element.xpath(LOOKUP_STR_FORMAT.format(target="SubRepresentation"))]
 
 
-class AdaptationSet(RepresentationBase):
+class AdaptationSet(RepresentationBase):  # pylint: disable=too-many-public-methods
     """ Adaptation Set tag representation """
 
     @cached_property
@@ -441,7 +444,7 @@ class BaseURL(Tag):
         return get_float_value(self.element.attrib.get('availabilityTimeOffset'))
 
     @cached_property
-    def availability_time_complete(self) -> bool | None:
+    def availability_time_complete(self) -> Optional[bool]:
         return get_bool_value(self.element.attrib.get('availabilityTimeComplete'))
 
 
@@ -710,7 +713,7 @@ class BitstreamSwitchings(URL):
     """ BitstreamSwitching tag representation """
 
 
-class MPD(Tag):
+class MPD(Tag):  # pylint: disable=too-many-public-methods
     """
         MPD class represents the root of a mpd manifest,
     it is the top most tag of an XML file following the DASH format

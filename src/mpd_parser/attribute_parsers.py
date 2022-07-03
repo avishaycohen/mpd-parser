@@ -40,6 +40,8 @@ def get_text_value(element: Element, tag_name: str, direct_child: bool = True) -
 
 def get_float_value(value: str) -> float:
     """ Helper to return a float from str """
+    if value is None:
+        return None
     return float(value) if value != 'INF' else math.inf
 
 

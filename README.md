@@ -55,6 +55,7 @@ python -m build
 I try to keep the pylint score above 9.
 ```shell
 python -m pylint ./mpd_parser/
+```
 
 ## TODO
 1. ~~finish working on periods and sub tags~~
@@ -73,8 +74,8 @@ python -m pylint ./mpd_parser/
    2. ~~usage~~
    3. Benchmarks
    4. contributing
-5. push to github
-6. push package to pypi
+5. ~~push to github~~
+6. ~~push package to pypi~~
 7. add github actions
    1. ~~pylint~~
    2. pytest

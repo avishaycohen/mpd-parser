@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mpd-parser"
-version = "0.0.3"
+version = "0.0.4"
 description = "lxml based parser for DASH manifests (mpd files)"
 readme = "README.md"
 authors = [{ name = "Avishay Cohen", email = "avishay.c@gmail.com" }]
@@ -24,7 +24,7 @@ dependencies = [
 requires-python = ">=3.7"
 
 [project.optional-dependencies]
-dev = ["pylint", "pytest"]
+dev = ["pylint", "pytest", "mpegdash"]
 
 [project.urls]
 Homepage = "https://github.com/avishaycohen/mpd-parser"

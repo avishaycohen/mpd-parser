@@ -78,7 +78,7 @@ python -m pylint ./mpd_parser/
 6. ~~push package to pypi~~
 7. add github actions
    1. ~~pylint~~
-   2. pytest
+   2. ~~pytest~~
    3. build package
    4. push package
       1. add tokens to secrets

@@ -43,4 +43,6 @@ class Parser:
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err
-        return MPD(root, encoding=encoding[0].groups()[0])
+        if encoding:
+            return MPD(root, encoding=encoding[0].groups()[0])
+        return MPD(root)

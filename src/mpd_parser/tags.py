@@ -721,7 +721,7 @@ class MPD(Tag):  # pylint: disable=too-many-public-methods
     the element passed for MPD should be the root of the lxml.etree
     """
 
-    def __init__(self, element: Element, encoding: str):
+    def __init__(self, element: Element, encoding: str = "utf-8"):
         super().__init__(element=element)
         self.encoding = encoding
 

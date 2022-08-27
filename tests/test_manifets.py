@@ -6,7 +6,7 @@ import os
 from pytest import mark
 from mpd_parser.parser import Parser
 
-from conftest import touch_attributes, MANIFESTS_DIR
+from tests.conftest import touch_attributes, MANIFESTS_DIR
 
 
 @mark.parametrize("input_file", [

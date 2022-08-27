@@ -1,12 +1,14 @@
 """
 Test the parsing of full manifests
 """
+import os
 
 from pytest import mark
 from mpd_parser.parser import Parser
 
+from tests.conftest import touch_attributes, MANIFESTS_DIR
 
-# TODO: need to add the other manifests with expected result dicts for compare
+
 @mark.parametrize("input_file", [
     "./../manifests/bigBuckBunny-onDemend.mpd",
 ])
@@ -27,3 +29,16 @@ def test_mpd_tag(input_file):
         assert len(mpd.periods) == 1
         assert mpd.periods[0].id is None
         assert mpd.periods[0].duration == "PT0H9M55.46S"
+
+
+@mark.parametrize("input_file", [f"{MANIFESTS_DIR}{name}" for name in os.listdir(MANIFESTS_DIR)])
+def test_touch_all_manifest_properties(input_file):
+    """
+        Test each manifest by walking over it's xml tree.
+    Does not verify values.
+    """
+    with open(input_file, mode="r", encoding='UTF-8') as manifest_file:
+        mpd_string = manifest_file.read()
+        mpd = Parser.from_string(mpd_string)
+        touch_attributes(mpd)
+

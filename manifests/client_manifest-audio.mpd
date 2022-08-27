@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD type="static" xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:dvb="urn:dvb:dash-extensions:2014-1" profiles="urn:dvb:dash:profile:dvb-dash:2014,urn:dvb:dash:profile:dvb-dash:isoff-ext-live:2014" minBufferTime="PT2.034S" maxSegmentDuration="PT3.84S" mediaPresentationDuration="PT1H">
+	<!-- MPEG DASH ISO BMFF test stream -->
+	<!-- BBC Research & Development -->
+	<!-- For more information see http://rdmedia.bbc.co.uk -->
+	<!-- Email dash@rd.bbc.co.uk -->
+	<!-- (c) British Broadcasting Corporation 2014.  All rights reserved.-->
+	<ProgramInformation>
+		<Title>Adaptive Bitrate Test Stream from BBC Research and Development - No events</Title>
+		<Source>BBC Research and Development</Source>
+		<Copyright>British Broadcasting Corporation 2014</Copyright>
+	</ProgramInformation>
+	<BaseURL serviceLocation="A" dvb:priority="1" dvb:weight="1">http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/</BaseURL>
+	<Period duration="PT1H" start="PT0S">
+		<AdaptationSet startWithSAP="2" segmentAlignment="true" id="3" codecs="mp4a.40.2" audioSamplingRate="48000" lang="eng" mimeType="audio/mp4">
+			<AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+			<Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"/>
+			<BaseURL>audio/</BaseURL>
+			<SegmentTemplate startNumber="1" timescale="1000" duration="3840" media="$RepresentationID$/$Number%06d$.m4s" initialization="$RepresentationID$/IS.mp4"/>
+			<Representation id="128kbps" bandwidth="128000"/>
+		</AdaptationSet>
+		<AdaptationSet startWithSAP="2" segmentAlignment="true" id="5" codecs="mp4a.40.2" audioSamplingRate="48000" lang="eng" mimeType="audio/mp4">
+			<AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="6"/>
+			<Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"/>
+			<BaseURL>audio/</BaseURL>
+			<SegmentTemplate startNumber="1" timescale="1000" duration="3840" media="$RepresentationID$/$Number%06d$.m4s" initialization="$RepresentationID$/IS.mp4"/>
+			<Representation id="320kbps-5_1" bandwidth="320000"/>
+		</AdaptationSet>
+	</Period>
+	<Metrics metrics="DVBErrors">
+		<Reporting schemeIdUri="urn:dvb:dash:reporting:2014" value="1" dvb:reportingUrl="http://rdmedia.bbc.co.uk/dash/errorreporting/reporterror.php" dvb:probability="50"/>
+	</Metrics>
+</MPD>

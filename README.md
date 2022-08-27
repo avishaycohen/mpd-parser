@@ -79,11 +79,8 @@ python -m pylint ./mpd_parser/
 7. add github actions
    1. ~~pylint~~
    2. ~~pytest~~
-   3. build package
-   4. push package
-      1. add tokens to secrets
-      2. build+push to test-pypi first
-      3. build+push to pypi if test success
+   3. ~~build package~~
+   4. ~~push package~~
 8. complete unit-tests
 9. refactor tags to multiple files
 10. add parsing from file

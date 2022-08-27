@@ -65,4 +65,6 @@ def get_int_value(value: str) -> Optional[int]:
 
 def get_list_of_type(target_type: Type, attribute_value: str) -> list[str]:
     """ Helper to return a list of strings from the tag attributte """
+    if attribute_value is None:
+        return []
     return [target_type(item) for item in re.split(r"[, ]", attribute_value)]

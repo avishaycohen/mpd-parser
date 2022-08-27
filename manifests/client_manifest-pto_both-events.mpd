@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD type="static" xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:dvb="urn:dvb:dash-extensions:2014-1" profiles="urn:dvb:dash:profile:dvb-dash:2014,urn:dvb:dash:profile:dvb-dash:isoff-ext-live:2014" minBufferTime="PT2.049S" maxSegmentDuration="PT3.84S" mediaPresentationDuration="PT20M1.92S">
+	<!-- MPEG DASH ISO BMFF test stream -->
+	<!-- BBC Research & Development -->
+	<!-- For more information see http://rdmedia.bbc.co.uk -->
+	<!-- Email dash@rd.bbc.co.uk -->
+	<!-- (c) British Broadcasting Corporation 2014.  All rights reserved.-->
+	<ProgramInformation>
+		<Title>Adaptive Bitrate Test Stream from BBC Research and Development - with presentation time offset on both components</Title>
+		<Source>BBC Research and Development</Source>
+		<Copyright>British Broadcasting Corporation 2014</Copyright>
+	</ProgramInformation>
+	<BaseURL serviceLocation="A" dvb:priority="1" dvb:weight="1">http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/</BaseURL>
+	<Period duration="PT20M1.92S" start="PT0S">
+		<AdaptationSet startWithSAP="2" segmentAlignment="true" id="1" sar="1:1" mimeType="video/mp4" >
+			<InbandEventStream schemeIdUri="tag:rdmedia.bbc.co.uk,2014:events/ballposition" value="1"/>
+			<Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"/>
+			<BaseURL>avc3-events-pto/</BaseURL>
+			<SegmentTemplate timescale="200" duration="768" presentationTimeOffset="120000" media="$RepresentationID$/$Number%06d$.m4s" initialization="$RepresentationID$/IS.mp4" />
+			<Representation id="1280x720p50" codecs="avc3.640020" height="720" width="1280" frameRate="50" scanType="progressive" bandwidth="5072376"/>
+			<Representation id="704x396p25" codecs="avc3.4d401e" height="396" width="704" frameRate="25" scanType="progressive" bandwidth="834352"/>
+		</AdaptationSet>
+		<AdaptationSet startWithSAP="1" segmentAlignment="true" id="3" codecs="mp4a.40.2" audioSamplingRate="48000" lang="eng" mimeType="audio/mp4" >
+			<AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+			<Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"/>
+			<BaseURL>audio-pto/</BaseURL>
+			<SegmentTemplate timescale="48000" duration="184320" presentationTimeOffset="28800000" media="$RepresentationID$/$Number%06d$.m4s" initialization="$RepresentationID$/IS.mp4" />
+			<Representation id="128kbps" bandwidth="128000" />
+		</AdaptationSet>
+	</Period>
+	<Metrics metrics="DVBErrors">
+		<Reporting schemeIdUri="urn:dvb:dash:reporting:2014" value="1" dvb:reportingUrl="http://rdmedia.bbc.co.uk/dash/errorreporting/reporterror.php" dvb:probability="50"/>
+	</Metrics>
+</MPD>

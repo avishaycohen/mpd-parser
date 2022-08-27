@@ -485,7 +485,7 @@ class SegmentBase(Tag):
 
     @cached_property
     def timescale(self):
-        return int(self.element.attrib.get('timescale'))
+        return get_int_value(self.element.attrib.get('timescale'))
 
     @cached_property
     def index_range(self):
@@ -497,7 +497,7 @@ class SegmentBase(Tag):
 
     @cached_property
     def presentation_time_offset(self):
-        return int(self.element.attrib.get('presentationTimeOffset'))
+        return get_int_value(self.element.attrib.get('presentationTimeOffset'))
 
     @cached_property
     def availability_time_offset(self):
@@ -509,12 +509,12 @@ class SegmentBase(Tag):
 
     @cached_property
     def initializations(self):
-        return [Initialization(member) for member in self.element.xpath(LOOKUP_STR_FORMAT.format("Initialization"))]
+        return [Initialization(member) for member in self.element.xpath(LOOKUP_STR_FORMAT.format(target="Initialization"))]
 
     @cached_property
     def representation_indexes(self):
         return [RepresentationIndex(member) for member in
-                self.element.xpath(LOOKUP_STR_FORMAT.format("RepresentationIndex"))]
+                self.element.xpath(LOOKUP_STR_FORMAT.format(target="RepresentationIndex"))]
 
 
 class MultipleSegmentBase(SegmentBase):

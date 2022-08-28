@@ -5,7 +5,7 @@ import math
 
 import pytest
 from lxml import etree
-from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming
+from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming, SegmentTemplate
 
 
 def test_program_info_tag():
@@ -56,3 +56,14 @@ def test_utc_timing_tag():
     utc_timing = UTCTiming(element)
     assert utc_timing.scheme_id_uri == 'urn:mpeg:dash:utc:http-iso:2014'
     assert utc_timing.value == 'https://time.akamai.com/?iso'
+
+
+def test_segment_template_tag():
+    """ test segment template tag """
+    segment_template_xml = '<SegmentTemplate timescale="48000" initialization="audio-7-lav/init.mp4" media="audio-7-lav/$Number%05d$.mp4" startNumber="1"/>'
+    element = etree.fromstring(segment_template_xml)
+    segment_template = SegmentTemplate(element)
+    assert segment_template.timescale == 48000
+    assert segment_template.initialization == 'audio-7-lav/init.mp4'
+    assert segment_template.media == 'audio-7-lav/$Number%05d$.mp4'
+    assert segment_template.start_number == 1

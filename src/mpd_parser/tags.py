@@ -251,9 +251,9 @@ class Representation(RepresentationBase):
         return [SegmentList(member) for member in self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentList"))]
 
     @cached_property
-    def segment_tempalates(self):
+    def segment_templates(self):
         return [SegmentTemplate(member) for member in
-                self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTempalate"))]
+                self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTemplate"))]
 
     @cached_property
     def sub_representations(self):
@@ -374,9 +374,9 @@ class AdaptationSet(RepresentationBase):  # pylint: disable=too-many-public-meth
         return [SegmentList(member) for member in self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentList"))]
 
     @cached_property
-    def segment_tempalates(self):
+    def segment_templates(self):
         return [SegmentTemplate(member) for member in
-                self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTempalate"))]
+                self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTemplate"))]
 
     @cached_property
     def representations(self):

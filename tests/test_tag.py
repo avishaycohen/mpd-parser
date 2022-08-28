@@ -59,9 +59,9 @@ def test_utc_timing_tag():
 
 
 def test_segment_template_tag():
-    """ test segment template tag"""
-    utc_xml = '<SegmentTemplate timescale="48000" initialization="audio-7-lav/init.mp4" media="audio-7-lav/$Number%05d$.mp4" startNumber="1"/>'
-    element = etree.fromstring(utc_xml)
+    """ test segment template tag """
+    segment_template_xml = '<SegmentTemplate timescale="48000" initialization="audio-7-lav/init.mp4" media="audio-7-lav/$Number%05d$.mp4" startNumber="1"/>'
+    element = etree.fromstring(segment_template_xml)
     segment_template = SegmentTemplate(element)
     assert segment_template.timescale == 48000
     assert segment_template.initialization == 'audio-7-lav/init.mp4'

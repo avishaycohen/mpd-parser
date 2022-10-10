@@ -18,6 +18,11 @@ with open("path/to/file.mpd", mode="r") as manifest_file:
     parsed_mpd = Parser.from_string(mpd_string)
 ```
 
+### convert back to string
+```python
+mpd_as_xml_string = Parser.to_string(parsed_mpd)
+```
+
 ## Overview
 A utility to parse mpeg dash mpd files quickly
 This package is heavily inspired by [mpegdash package](https://github.com/sangwonl/python-mpegdash) the main difference is that I choose to relay on lxml for parsing, and not the standard xml library.
@@ -29,8 +34,6 @@ The decision to implement it with lxml is for two reasons:
 mpegdash package has two distinct advantages over this package:
 1. it does not require third party libraries.
 2. it uses the classic DOM approach to parsing XML files. it is a well known standard.
-
-Currently, the package supports parsing only, not the creation or object->string conversion.
 
 ## Benchmarks
 TBA
@@ -83,5 +86,10 @@ python -m pylint ./mpd_parser/
    4. ~~push package~~
 8. complete unit-tests
 9. refactor tags to multiple files
-10. add parsing from file
-11. add parsing from URL
+10. Parsing:
+    1. ~~parsing from string~~
+    2. parsing from file
+    3. parsing from URL
+11. save mpd object:
+    1. ~~object to string~~
+    2. object to file

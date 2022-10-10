@@ -5,7 +5,7 @@ import math
 
 import pytest
 from lxml import etree
-from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming, SegmentTemplate
+from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming, SegmentTemplate, Event, Subset
 
 
 def test_program_info_tag():
@@ -21,8 +21,10 @@ def test_program_info_tag():
     prog_info = ProgramInfo(element)
     assert prog_info.lang == 'some-lang'
     assert prog_info.more_info_url == 'website'
-    assert prog_info.titles == ['MultiRate', 'MultiRate2']
-    assert prog_info.sources == ['source1']
+    assert len(prog_info.titles) == 2
+    assert prog_info.titles[0].text == 'MultiRate'
+    assert prog_info.titles[1].text == 'MultiRate2'
+    assert prog_info.sources[0].text == 'source1'
     assert prog_info.copy_rights == []
 
 
@@ -44,7 +46,7 @@ def test_base_url_tag(xml_snippet, expected):
     """ test base url tag """
     element = etree.fromstring(xml_snippet)
     base_url = BaseURL(element)
-    assert base_url.base_url_value == expected.get('base_url_value')
+    assert base_url.text == expected.get('base_url_value')
     assert base_url.availability_time_offset == expected.get('availability_time_offset')
     assert base_url.availability_time_complete == expected.get('availability_time_complete')
 
@@ -67,3 +69,23 @@ def test_segment_template_tag():
     assert segment_template.initialization == 'audio-7-lav/init.mp4'
     assert segment_template.media == 'audio-7-lav/$Number%05d$.mp4'
     assert segment_template.start_number == 1
+
+
+def test_event_tag():
+    """ test event tag """
+    event_xml = '<Event presentationTime="5" duration="1" id="2">Hello world</Event>'
+    element = etree.fromstring(event_xml)
+    event = Event(element)
+    assert event.text == 'Hello world'
+    assert event.presentation_time == 5
+    assert event.duration == 1
+    assert event.id == 2
+
+
+def test_subset_tag():
+    """ test event tag """
+    subset_xml = '<Subset id="1" contains="100,101"/>'
+    element = etree.fromstring(subset_xml)
+    subset = Subset(element)
+    assert subset.id == '1'
+    assert subset.contains == [100, 101]

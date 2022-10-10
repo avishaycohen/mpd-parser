@@ -46,3 +46,14 @@ class Parser:
         if encoding:
             return MPD(root, encoding=encoding[0].groups()[0])
         return MPD(root)
+
+    @classmethod
+    def to_string(cls, mpd: MPD) -> str:
+        """ generate a string xml from a given MPD tag object
+
+        Args:
+                mpd: MPD object created by one of the parser factories
+        Returns:
+                a string representation of the MPD object, it's an xml and dash mpeg manifest
+        """
+        return etree.tostring(mpd.element).decode("utf-8")

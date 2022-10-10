@@ -5,8 +5,6 @@ import math
 import re
 from typing import Optional, Type
 
-from lxml.etree import Element
-
 
 def organize_ns(namespace_mapping: dict[Optional[str]]) -> dict:
     """
@@ -21,21 +19,6 @@ def organize_ns(namespace_mapping: dict[Optional[str]]) -> dict:
     new_mapping['ns'] = namespace_mapping[None]
     new_mapping.pop(None)
     return new_mapping
-
-
-def get_text_value(element: Element, tag_name: str, direct_child: bool = True) -> list[str]:
-    """
-        Extract the value of a text field from a tag
-    Args:
-        element: lxml element node
-        tag_name: name of target tag
-        direct_child: should we look only in direct children for results
-
-    Returns:
-        list of lxml elements that has tag_name as their tag
-    """
-    return [member.text for member in
-            element.xpath(f'{"./" if direct_child else ".//"}*[local-name(.) = "{tag_name}" ]')]
 
 
 def get_float_value(value: str) -> float:
@@ -64,7 +47,7 @@ def get_int_value(value: str) -> Optional[int]:
 
 
 def get_list_of_type(target_type: Type, attribute_value: str) -> list[str]:
-    """ Helper to return a list of strings from the tag attributte """
+    """ Helper to return a list of strings from the tag attribute """
     if attribute_value is None:
         return []
     return [target_type(item) for item in re.split(r"[, ]", attribute_value)]

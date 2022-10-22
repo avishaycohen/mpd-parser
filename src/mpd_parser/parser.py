@@ -48,6 +48,23 @@ class Parser:
         return MPD(root)
 
     @classmethod
+    def from_file(cls, manifest_file_name: str) -> MPD:
+        """
+            Generate a parsed mpd object from a given file name
+        Args:
+            manifest_file_name (str): file name to parse
+
+        Returns:
+            an object representing the MPD tag and all it's XML goodies
+        """
+        try:
+            tree = etree.parse(manifest_file_name)
+        except ValueError as err:
+            if "Unicode" in err.args[0]:
+                raise UnicodeDeclaredError() from err
+        return MPD(tree.getroot())
+
+    @classmethod
     def to_string(cls, mpd: MPD) -> str:
         """ generate a string xml from a given MPD tag object
 

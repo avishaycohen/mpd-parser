@@ -18,6 +18,12 @@ with open("path/to/file.mpd", mode="r") as manifest_file:
     parsed_mpd = Parser.from_string(mpd_string)
 ```
 
+### parse from file
+```python
+input_file = "path/to/file.mpd"
+mpd = Parser.from_file(input_file)
+```
+
 ### convert back to string
 ```python
 mpd_as_xml_string = Parser.to_string(parsed_mpd)
@@ -88,7 +94,7 @@ python -m pylint ./mpd_parser/
 9. refactor tags to multiple files
 10. Parsing:
     1. ~~parsing from string~~
-    2. parsing from file
+    2. ~~parsing from file~~
     3. parsing from URL
 11. save mpd object:
     1. ~~object to string~~

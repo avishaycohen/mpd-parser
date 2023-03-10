@@ -2,9 +2,11 @@
 Main module of the package, Parser class
 """
 from re import Match, sub
+from urllib.request import urlopen
+
 from lxml import etree
 
-from mpd_parser.exceptions import UnicodeDeclaredError
+from mpd_parser.exceptions import UnicodeDeclaredError, UnknownElementTreeParseError
 from mpd_parser.tags import MPD
 
 ENCODING_PATTERN = r'<\?.*?\s(encoding=\"\S*\").*\?>'
@@ -43,6 +45,8 @@ class Parser:
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err
+        except Exception as err:
+            raise UnknownElementTreeParseError() from err
         if encoding:
             return MPD(root, encoding=encoding[0].groups()[0])
         return MPD(root)
@@ -62,6 +66,28 @@ class Parser:
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err
+        except Exception as err:
+            raise UnknownElementTreeParseError() from err
+        return MPD(tree.getroot())
+
+    @classmethod
+    def from_url(cls, url: str) -> MPD:
+        """
+            Generate a parsed mpd object from a given URL
+        Args:
+            url (str): the url of the file to parse
+
+        Returns:
+            an object representing the MPD tag and all it's XML goodies
+        """
+        try:
+            with urlopen(url) as manifest_file:
+                tree = etree.parse(manifest_file)
+        except ValueError as err:
+            if "Unicode" in err.args[0]:
+                raise UnicodeDeclaredError() from err
+        except Exception as err:
+            raise UnknownElementTreeParseError() from err
         return MPD(tree.getroot())
 
     @classmethod
@@ -71,6 +97,6 @@ class Parser:
         Args:
                 mpd: MPD object created by one of the parser factories
         Returns:
-                a string representation of the MPD object, it's an xml and dash mpeg manifest
+                a string representation of the MPD object, xml formatted dash mpeg manifest
         """
         return etree.tostring(mpd.element).decode("utf-8")

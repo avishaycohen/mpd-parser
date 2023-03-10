@@ -50,6 +50,26 @@ def test_parse_from_file_mpd_tag(input_file):
     assert mpd.periods[0].id is None
     assert mpd.periods[0].duration == "PT0H9M55.46S"
 
+@mark.parametrize("url", [
+    "https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd",
+])
+def test_parse_from_url_mpd_tag(url):
+    """ Test that parser works and create MPD object from URL target """
+    mpd = Parser.from_url(url)
+    assert mpd.id == "f08e80da-bf1d-4e3d-8899-f0f6155f6efa"
+    assert mpd.type == "static"
+    assert mpd.min_buffer_time == "P0Y0M0DT0H0M1.000S"
+    assert mpd.media_presentation_duration == "P0Y0M0DT0H3M30.000S"
+    assert mpd.profiles == "urn:mpeg:dash:profile:isoff-main:2011"
+    assert mpd.program_informations == []
+    assert len(mpd.periods) == 1
+    assert mpd.periods[0].id is None
+    assert mpd.periods[0].duration is None
+    assert mpd.publish_time == "2015-08-04T10:47:32.000Z"
+    assert len(mpd.periods[0].adaptation_sets) == 2
+    assert mpd.periods[0].adaptation_sets[0].mime_type == "video/mp4"
+    assert mpd.periods[0].adaptation_sets[0].codecs == "avc1.42c00d"
+
 
 @mark.parametrize("parsing_type", [Parser.from_file, Parser.from_string])
 @mark.parametrize("input_file", [f"{MANIFESTS_DIR}{name}" for name in os.listdir(MANIFESTS_DIR)])

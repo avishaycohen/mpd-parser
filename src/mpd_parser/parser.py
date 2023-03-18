@@ -14,11 +14,11 @@ ENCODING_PATTERN = r'<\?.*?\s(encoding=\"\S*\").*\?>'
 
 class Parser:
     """
-    Parser class, holds factories to work with manifest files.
-    can parse:
-    1. from string - using the from_string method
-    2. from file - TBA
-    3. from url - TBA
+        Parser class, holds factories to work with manifest files.
+    can parse manifests in the following formats:
+        1. from string
+        2. from file
+        3. from url
     """
 
     @classmethod

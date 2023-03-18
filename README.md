@@ -49,7 +49,7 @@ Taken from https://ottverse.com/free-mpeg-dash-mpd-manifest-example-test-urls/
 These are what I used to test and benchmark the package.
 
 ## Missing unit-tests
-1. tags
+1. not all tags have a test
 2. attribute parsers
 3. full manifest testing
 
@@ -60,6 +60,7 @@ TBA
 ```shell
 python -m build
 ```
+
 ### Run pylint locally
 I try to keep the pylint score above 9.
 ```shell
@@ -95,7 +96,7 @@ python -m pylint ./mpd_parser/
 10. Parsing:
     1. ~~parsing from string~~
     2. ~~parsing from file~~
-    3. parsing from URL
+    3. ~~parsing from URL~~
 11. save mpd object:
     1. ~~object to string~~
     2. object to file

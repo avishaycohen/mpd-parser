@@ -20,8 +20,8 @@ class Tag:
     """ Generic repr of mpd tag object """
 
     def __init__(self, element: Element) -> None:
-        self.element = element
-        self.tag_map = None
+        self.element: Element = element
+        self.tag_map: dict = {}
 
     def __setattr__(self, key: str, value: Any) -> None:
         """ overload default setattr to make changes to the lxml element when attributes are changed by user """
@@ -566,7 +566,7 @@ class SegmentTimeline(Tag):
     """ SegmentTimeline tag repr """
 
     @cached_property
-    def base_urls(self):
+    def segments(self):
         return [Segment(member) for member in self.element.xpath(LOOKUP_STR_FORMAT.format(target="S"))]
 
 

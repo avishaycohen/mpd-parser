@@ -7,6 +7,7 @@ you may come across when parsing MPD manifest file.
 from functools import cached_property
 from typing import Optional, Any
 
+from isodate import parse_duration
 from lxml.etree import Element
 
 from mpd_parser.attribute_parsers import organize_ns, get_float_value, get_bool_value, get_int_value, \
@@ -457,14 +458,17 @@ class Segment(Tag):
 
     @cached_property
     def t(self):
+        """ starting time of the segment """
         return get_int_value(self.element.attrib.get('t'))
 
     @cached_property
     def d(self):
+        """ duration time of the segmeent """
         return get_int_value(self.element.attrib.get('d'))
 
     @cached_property
     def r(self):
+        """ number of repeating segments """
         return get_int_value(self.element.attrib.get('r'))
 
 
@@ -659,6 +663,7 @@ class SegmentList(MultipleSegmentBase):
 
 
 class SegmentTemplate(MultipleSegmentBase):
+    """ SegmentTemplate tag """
 
     @cached_property
     def media(self):
@@ -733,8 +738,18 @@ class Period(Tag):
         return self.element.attrib.get('start')
 
     @cached_property
+    def start_in_seconds(self) -> float:
+        """ Parsed and converted to seconds """
+        return parse_duration(self.start).total_seconds() if self.start else 0.0
+
+    @cached_property
     def duration(self):
         return self.element.attrib.get('duration')
+
+    @cached_property
+    def duration_in_seconds(self) -> float:
+        """ Parsed and converted to seconds """
+        return parse_duration(self.duration).total_seconds() if self.start else 0.0
 
     @cached_property
     def bitstream_switching(self):

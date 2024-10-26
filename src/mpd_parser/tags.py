@@ -4,7 +4,7 @@
 The tags module holds all the type of different nodes
 you may come across when parsing MPD manifest file.
 """
-from functools import cached_property
+from functools import cached_property, lru_cache
 from typing import Optional, Any
 
 from isodate import parse_duration
@@ -12,9 +12,8 @@ from lxml.etree import Element
 
 from mpd_parser.attribute_parsers import organize_ns, get_float_value, get_bool_value, get_int_value, \
     get_list_of_type
+from mpd_parser.constants import DERIVED_ATTRIBUTES_CACHE_SIZE, KEYS_NOT_FOR_SETTING, LOOKUP_STR_FORMAT, ZERO_SECONDS
 
-LOOKUP_STR_FORMAT = './*[local-name(.) = "{target}" ]'
-KEYS_NOT_FOR_SETTING = ['element', 'tag_map', 'encoding']
 
 
 class Tag:
@@ -737,19 +736,22 @@ class Period(Tag):
     def start(self):
         return self.element.attrib.get('start')
 
-    @cached_property
+    @property
+    @lru_cache(maxsize=DERIVED_ATTRIBUTES_CACHE_SIZE)
     def start_in_seconds(self) -> float:
-        """ Parsed and converted to seconds """
-        return parse_duration(self.start).total_seconds() if self.start else 0.0
+        """ Parsed and converted to seconds,
+        Does not uses cached_property to block writes as it must be derived to maintain truthness
+        """
+        return parse_duration(self.start).total_seconds() if self.start else ZERO_SECONDS
 
     @cached_property
     def duration(self):
         return self.element.attrib.get('duration')
 
-    @cached_property
+    @property
     def duration_in_seconds(self) -> float:
         """ Parsed and converted to seconds """
-        return parse_duration(self.duration).total_seconds() if self.start else 0.0
+        return parse_duration(self.duration).total_seconds() if self.start else ZERO_SECONDS
 
     @cached_property
     def bitstream_switching(self):

@@ -11,3 +11,7 @@ class UnicodeDeclaredError(Exception):
 class UnknownElementTreeParseError(Exception):
     """ Raised after a etree parse operation fails on an unexpected error """
     description = "encountered unexpected error while using lxml parsing operation"
+
+class NoPeriodAncestorForTargetElement(Exception):
+    """ Raised when trying to create a timeline from template without parent period """
+    description = "targeted segment template is not nested under a periods"

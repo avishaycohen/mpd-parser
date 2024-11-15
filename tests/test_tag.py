@@ -5,7 +5,8 @@ import math
 
 import pytest
 from lxml import etree
-from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming, SegmentTemplate, Event, Subset
+from mpd_parser.tags import ProgramInfo, BaseURL, UTCTiming, Event, Subset
+from mpd_parser.tags import SegmentTemplate
 
 
 def test_program_info_tag():

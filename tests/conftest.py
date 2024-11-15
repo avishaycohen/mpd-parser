@@ -9,7 +9,8 @@ from mpd_parser.tags import Tag
 MANIFESTS_DIR = "./../manifests/"
 
 
-def touch_attributes(obj: Any):
+def touch_attributes(obj: Any, verbose: bool = False):
+    """ this function go over an object attributes and tries to see that they are populated """
     attrib_list = [a for a in dir(obj) if not a.startswith('__')]
     for attrib in attrib_list:
         if getattr(obj, attrib) is None:
@@ -21,4 +22,4 @@ def touch_attributes(obj: Any):
             if isinstance(item, Tag):
                 touch_attributes(item)
                 continue
-            print(f'{attrib}: {getattr(obj, attrib)}')
+            print(f'{attrib}: {getattr(obj, attrib) if verbose else "object"}')

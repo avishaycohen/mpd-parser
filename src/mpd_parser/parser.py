@@ -16,9 +16,9 @@ class Parser:
     """
     Parser class, holds factories to work with manifest files.
     can parse:
-    1. from string - using the from_string method
-    2. from file - TBA
-    3. from url - TBA
+    1. from_string
+    2. from_file
+    3. from_url
     """
 
     @classmethod

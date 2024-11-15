@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mpd-parser"
-version = "0.1.3"
+version = "0.1.4"
 description = "lxml based parser for DASH manifests (mpd files)"
 readme = "README.md"
 authors = [{ name = "Avishay Cohen", email = "avishay.c@gmail.com" }]
@@ -19,7 +19,8 @@ classifiers = [
 ]
 keywords = ["parser", "DASH", "manifest", "video", "files"]
 dependencies = [
-    "lxml"
+    "lxml",
+    "isodate"
 ]
 requires-python = ">=3.8"
 

@@ -4,7 +4,7 @@ Conftest module for package testing
 
 from typing import Any
 
-from mpd_parser.tags import Tag
+from mpd_parser.models.base_tags import Tag
 
 MANIFESTS_DIR = "./../manifests/"
 

@@ -206,10 +206,7 @@ def test_subset_tag():
         ),
     ],
 )
-def test_base_url_tag(
-    xml_snippet,
-    expected: dict[str, str | float] | dict[str, str | float | bool],
-):
+def test_base_url_tag(xml_snippet, expected):
     """test base url tag"""
     element = etree.fromstring(xml_snippet)
     base_url = BaseURL(element)

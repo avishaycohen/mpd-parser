@@ -1,15 +1,17 @@
 """
 Main module of the package, Parser class
 """
+
 from re import Match, sub
 from urllib.request import urlopen
 
 from lxml import etree
 
 from mpd_parser.exceptions import UnicodeDeclaredError, UnknownElementTreeParseError
-from mpd_parser.tags import MPD
+from mpd_parser.models.composite_tags import MPD
 
-ENCODING_PATTERN = r'<\?.*?\s(encoding=\"\S*\").*\?>'
+
+ENCODING_PATTERN = r"<\?.*?\s(encoding=\"\S*\").*\?>"
 
 
 class Parser:
@@ -34,8 +36,9 @@ class Parser:
         # remove encoding declaration from manifest if exist
         encoding = []
         if "encoding" in manifest_as_string:
+
             def cut_and_burn(match: Match) -> str:
-                """ Helper to save the removed encoding"""
+                """Helper to save the removed encoding"""
                 encoding.append(match)
                 return ""
 
@@ -92,7 +95,7 @@ class Parser:
 
     @classmethod
     def to_string(cls, mpd: MPD) -> str:
-        """ generate a string xml from a given MPD tag object
+        """generate a string xml from a given MPD tag object
 
         Args:
                 mpd: MPD object created by one of the parser factories

@@ -3,7 +3,6 @@ Test the base tag classes as standalone classes
 """
 
 import math
-from typing import LiteralString
 from xml.etree.ElementTree import Element
 
 import pytest
@@ -208,7 +207,7 @@ def test_subset_tag():
     ],
 )
 def test_base_url_tag(
-    xml_snippet: LiteralString | LiteralString,
+    xml_snippet,
     expected: dict[str, str | float] | dict[str, str | float | bool],
 ):
     """test base url tag"""

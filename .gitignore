@@ -133,3 +133,7 @@ dmypy.json
 
 # Pycharm
 .idea
+
+# Windows python venv
+/Scripts/
+pyvenv.cfg

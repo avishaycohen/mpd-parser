@@ -2,15 +2,19 @@
 Main module of the package, Parser class
 """
 
+import logging
 from re import Match, sub
 from urllib.request import urlopen
 
 from lxml import etree
 
-from mpd_parser.exceptions import UnicodeDeclaredError, UnknownElementTreeParseError
+from mpd_parser.exceptions import UnicodeDeclaredError, UnknownElementTreeParseError, UnknownValueError
 from mpd_parser.models.composite_tags import MPD
 
+# module level logger, application will configure formatting and handlers
+logger = logging.getLogger(__name__)
 
+# Regular expression to match encoding declaration in XML
 ENCODING_PATTERN = r"<\?.*?\s(encoding=\"\S*\").*\?>"
 
 
@@ -48,7 +52,10 @@ class Parser:
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err
+            logger.exception("Failed to parse manifest string")
+            raise UnknownValueError() from err
         except Exception as err:
+            logger.exception("Failed to parse manifest string")
             raise UnknownElementTreeParseError() from err
         if encoding:
             return MPD(root, encoding=encoding[0].groups()[0])
@@ -69,7 +76,10 @@ class Parser:
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err
+            logger.exception("Failed to parse manifest file %s", manifest_file_name)
+            raise UnknownValueError() from err
         except Exception as err:
+            logger.exception("Failed to parse manifest file %s", manifest_file_name)
             raise UnknownElementTreeParseError() from err
         return MPD(tree.getroot())
 
@@ -89,7 +99,10 @@ class Parser:
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err
+            logger.exception("Failed to parse manifest from URL %s", url)
+            raise UnknownValueError() from err
         except Exception as err:
+            logger.exception("Failed to parse manifest from URL %s", url)
             raise UnknownElementTreeParseError() from err
         return MPD(tree.getroot())
 

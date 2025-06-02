@@ -7,6 +7,9 @@ class UnicodeDeclaredError(Exception):
     """ Raised when the XML has an encoding declaration in it's manifest and the parser did not remove it """
     description = "xml has encoding declaration, lxml cannot process it"
 
+class UnknownValueError(Exception):
+    """ Raised when the XML parsing fails on unexpected issue, check error for more information """
+    description = "lxml failed to parse manifest, verify the input"
 
 class UnknownElementTreeParseError(Exception):
     """ Raised after a etree parse operation fails on an unexpected error """

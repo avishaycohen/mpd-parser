@@ -1,12 +1,23 @@
 """
 Test the parsing of full manifests
 """
+import io
 import os
 
-from pytest import mark
+from pytest import mark, raises
+from mpd_parser.exceptions import UnicodeDeclaredError, UnknownElementTreeParseError, UnknownValueError
 from mpd_parser.parser import Parser
 
 from tests.conftest import touch_attributes, MANIFESTS_DIR
+
+class DummyFile(io.BytesIO):
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+def dummy_urlopen(url):
+    return DummyFile(b"<MPD></MPD>")
 
 
 @mark.parametrize("input_file", [
@@ -104,3 +115,49 @@ def test_to_string(input_file):
                    0].range == \
                transformed_mpd.periods[0].adaptation_sets[0].representations[0].segment_bases[0].initializations[
                    0].range
+
+@mark.parametrize(
+    "exception,patch_func",
+    [
+        (UnicodeDeclaredError, lambda: ValueError("Unicode something")),
+        (UnknownValueError, lambda: ValueError("Some other value error")),
+        (UnknownElementTreeParseError, lambda: RuntimeError("Some runtime error")),
+    ]
+)
+def test_from_string_error_handling(monkeypatch, exception, patch_func):
+    def fake_parse(*args, **kwargs):
+        raise patch_func()
+    monkeypatch.setattr("mpd_parser.parser.etree.fromstring", fake_parse)
+    with raises(exception):
+        Parser.from_string("<MPD></MPD>")
+
+@mark.parametrize(
+    "exception,patch_func",
+    [
+        (UnicodeDeclaredError, lambda: ValueError("Unicode something")),
+        (UnknownValueError, lambda: ValueError("Some other value error")),
+        (UnknownElementTreeParseError, lambda: RuntimeError("Some runtime error")),
+    ]
+)
+def test_from_file_error_handling(monkeypatch, exception, patch_func):
+    def fake_parse(*args, **kwargs):
+        raise patch_func()
+    monkeypatch.setattr("mpd_parser.parser.etree.parse", fake_parse)
+    with raises(exception):
+        Parser.from_file("dummy_file.mpd")
+
+@mark.parametrize(
+    "exception,patch_func",
+    [
+        (UnicodeDeclaredError, lambda: ValueError("Unicode something")),
+        (UnknownValueError, lambda: ValueError("Some other value error")),
+        (UnknownElementTreeParseError, lambda: RuntimeError("Some runtime error")),
+    ]
+)
+def test_from_url_error_handling(monkeypatch, exception, patch_func):
+    def fake_parse(*args, **kwargs):
+        raise patch_func()
+    monkeypatch.setattr("mpd_parser.parser.etree.parse", fake_parse)
+    monkeypatch.setattr("mpd_parser.parser.urlopen", dummy_urlopen)
+    with raises(exception):
+        Parser.from_url("http://dummy.url/manifest.mpd")

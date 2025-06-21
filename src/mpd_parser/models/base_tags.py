@@ -46,6 +46,22 @@ class Tag:
 
         self.element.attrib[element_attrib_name] = str(value)
 
+    def validate(self) -> None:
+        """
+        Validate the tag, should be implemented by subclasses when adding @mandatory attributes,
+        overload this method and use super to call it after validating specific elements.
+        """
+        for attr_name in dir(self):
+            # Skip private/protected and methods
+            if attr_name.startswith("_"):
+                continue
+            attr = getattr(self, attr_name)
+            # Check if it's a list of Tag instances
+            if isinstance(attr, list) and attr and isinstance(attr[0], Tag):
+                for child in attr:
+                    child.validate()
+
+
     @classmethod
     def to_camel_case(cls, snake_case_string: str) -> str:
         """convert snake_case to lowerCamelCase"""

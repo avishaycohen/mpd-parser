@@ -18,3 +18,7 @@ class UnknownElementTreeParseError(Exception):
 class NoPeriodAncestorForTargetElement(Exception):
     """ Raised when trying to create a timeline from template without parent period """
     description = "targeted segment template is not nested under a periods"
+
+class InvalidManifestMissingMandatoryElementError(Exception):
+    """ Raised when the manifest is missing a mandatory element """
+    description = "manifest is missing a mandatory element, check the MPD specification for more information"

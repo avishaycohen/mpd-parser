@@ -28,7 +28,7 @@ class Parser:
     """
 
     @classmethod
-    def from_string(cls, manifest_as_string: str) -> MPD:
+    def from_string(cls, manifest_as_string: str, validate: bool = False) -> MPD:
         """generate a parsed mpd object from a given string
 
         Args:
@@ -57,12 +57,15 @@ class Parser:
         except Exception as err:
             logger.exception("Failed to parse manifest string")
             raise UnknownElementTreeParseError() from err
-        if encoding:
-            return MPD(root, encoding=encoding[0].groups()[0])
-        return MPD(root)
+
+        mpd = MPD(root, encoding=encoding[0].groups()[0] if encoding else "utf-8")
+
+        if validate:
+            mpd.validate()
+        return mpd
 
     @classmethod
-    def from_file(cls, manifest_file_name: str) -> MPD:
+    def from_file(cls, manifest_file_name: str, validate: bool = False) -> MPD:
         """
             Generate a parsed mpd object from a given file name
         Args:
@@ -81,10 +84,14 @@ class Parser:
         except Exception as err:
             logger.exception("Failed to parse manifest file %s", manifest_file_name)
             raise UnknownElementTreeParseError() from err
-        return MPD(tree.getroot())
+
+        mpd = MPD(tree.getroot())
+        if validate:
+            mpd.validate()
+        return mpd
 
     @classmethod
-    def from_url(cls, url: str) -> MPD:
+    def from_url(cls, url: str, validate: bool = False) -> MPD:
         """
             Generate a parsed mpd object from a given URL
         Args:
@@ -104,7 +111,11 @@ class Parser:
         except Exception as err:
             logger.exception("Failed to parse manifest from URL %s", url)
             raise UnknownElementTreeParseError() from err
-        return MPD(tree.getroot())
+
+        mpd = MPD(tree.getroot())
+        if validate:
+            mpd.validate()
+        return mpd
 
     @classmethod
     def to_string(cls, mpd: MPD) -> str:

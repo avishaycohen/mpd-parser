@@ -34,6 +34,7 @@ from mpd_parser.models.base_tags import (
 )
 from mpd_parser.models.segment_tags import MultipleSegmentBase, SegmentBase, SegmentList
 from mpd_parser.timeline_utils import SegmentTiming
+from mpd_parser.validation import mandatory
 
 
 class Period(Tag):
@@ -156,6 +157,15 @@ class MPD(Tag):  # pylint: disable=too-many-public-methods
         self.encoding = encoding
         self.tag_map = {"cenc": "xlmns:cenc"}
 
+    def validate(self):
+        """Validate the MPD object against the DASH specification.
+        This starts a recursive validation of all the tags and their children.
+        Raises:
+            InvalidManifestMissingMandatoryElementError: if a mandatory element is missing
+        """
+        _ = self.min_buffer_time
+        super().validate()
+
     @cached_property
     def namespace(self):
         value = self.element.nsmap
@@ -234,9 +244,18 @@ class MPD(Tag):  # pylint: disable=too-many-public-methods
             else TWO_SECONDS  # default for minimumUpdatePeriod
         )
 
-    @cached_property
+    @mandatory
     def min_buffer_time(self):
         return self.element.attrib.get("minBufferTime")
+
+    @property
+    @lru_cache
+    def min_buffer_time_in_seconds(self) -> float:
+        return (
+            parse_duration(self.min_buffer_time).total_seconds()
+            if self.min_buffer_time
+            else ZERO_SECONDS
+        )
 
     @cached_property
     def time_shift_buffer_depth(self):
@@ -551,11 +570,17 @@ class SubRepresentation(RepresentationBase):
 class Representation(RepresentationBase):
     """Representation tag"""
 
-    @cached_property
+    def validate(self):
+        """ Check mandatory attributes have values. """
+        _ = self.id
+        _ = self.bandwidth
+        super().validate()
+
+    @mandatory
     def id(self):
         return self.element.attrib.get("id")
 
-    @cached_property
+    @mandatory
     def bandwidth(self):
         return get_int_value(self.element.attrib.get("bandwidth"))
 

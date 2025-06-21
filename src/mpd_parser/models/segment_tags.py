@@ -94,13 +94,11 @@ class MultipleSegmentBase(SegmentBase):
         return get_int_value(self.element.attrib.get("startNumber"))
 
     @cached_property
-    def segment_timelines(self):
-        return [
-            SegmentTimeline(member)
-            for member in self.element.xpath(
-                LOOKUP_STR_FORMAT.format(target="SegmentTimeline")
-            )
-        ]
+    def segment_timeline(self):
+        elements = self.element.xpath(
+            LOOKUP_STR_FORMAT.format(target="SegmentTimeline")
+        )
+        return SegmentTimeline(elements[0]) if elements else None
 
     @cached_property
     def bitstream_switchings(self):

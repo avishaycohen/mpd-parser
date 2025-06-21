@@ -100,13 +100,9 @@ class Period(Tag):
         ]
 
     @cached_property
-    def segment_templates(self):
-        return [
-            SegmentTemplate(member)
-            for member in self.element.xpath(
-                LOOKUP_STR_FORMAT.format(target="SegmentTemplate")
-            )
-        ]
+    def segment_template(self):
+        elements = self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTemplate"))
+        return SegmentTemplate(elements[0]) if elements else None
 
     @cached_property
     def asset_identifiers(self):
@@ -601,13 +597,9 @@ class Representation(RepresentationBase):
         ]
 
     @cached_property
-    def segment_templates(self):
-        return [
-            SegmentTemplate(member)
-            for member in self.element.xpath(
-                LOOKUP_STR_FORMAT.format(target="SegmentTemplate")
-            )
-        ]
+    def segment_template(self):
+        elements = self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTemplate"))
+        return SegmentTemplate(elements[0]) if elements else None
 
     @cached_property
     def sub_representations(self):
@@ -769,13 +761,9 @@ class AdaptationSet(RepresentationBase):  # pylint: disable=too-many-public-meth
         ]
 
     @cached_property
-    def segment_templates(self):
-        return [
-            SegmentTemplate(member)
-            for member in self.element.xpath(
-                LOOKUP_STR_FORMAT.format(target="SegmentTemplate")
-            )
-        ]
+    def segment_template(self):
+        elements = self.element.xpath(LOOKUP_STR_FORMAT.format(target="SegmentTemplate"))
+        return SegmentTemplate(elements[0]) if elements else None
 
     @cached_property
     def representations(self):

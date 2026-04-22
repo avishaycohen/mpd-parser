@@ -4,7 +4,7 @@ Main module of the package, Parser class
 
 import logging
 from re import Match, sub
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from lxml import etree
 
@@ -94,7 +94,8 @@ class Parser:
             an object representing the MPD tag and all it's XML goodies
         """
         try:
-            with urlopen(url) as manifest_file:
+            req = Request(url, headers={"User-Agent": "mpd-parser/1.0"})
+            with urlopen(req) as manifest_file:
                 tree = etree.parse(manifest_file)
         except ValueError as err:
             if "Unicode" in err.args[0]:

@@ -5,6 +5,8 @@
 $ python -m pip install mpd-parser
 ```
 
+*Note: `mpd-parser` requires Python 3.10 or newer.*
+
 ## Usage
 ### Importing
 

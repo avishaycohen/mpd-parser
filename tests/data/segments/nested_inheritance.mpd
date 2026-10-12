@@ -1,0 +1,19 @@
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011">
+  <BaseURL>https://cdn.example/root/</BaseURL>
+  <BaseURL>https://backup.example/</BaseURL>
+  <Period duration="PT3S">
+    <BaseURL>period/</BaseURL>
+    <SegmentTemplate timescale="10" duration="20" media="$RepresentationID$/$Number$.m4s"/>
+    <AdaptationSet>
+      <BaseURL>../video/</BaseURL>
+      <SegmentTemplate initialization="init-$RepresentationID$.mp4" startNumber="4"/>
+      <Representation id="one">
+        <BaseURL>one/</BaseURL>
+        <SegmentTemplate duration="10"/>
+      </Representation>
+      <Representation id="two">
+        <BaseURL>two/</BaseURL>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

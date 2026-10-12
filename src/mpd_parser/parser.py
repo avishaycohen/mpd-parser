@@ -96,7 +96,7 @@ class Parser:
         try:
             req = Request(url, headers={"User-Agent": "mpd-parser/1.0"})
             with urlopen(req) as manifest_file:
-                tree = etree.parse(manifest_file)
+                tree = etree.parse(manifest_file, base_url=manifest_file.geturl())
         except ValueError as err:
             if "Unicode" in err.args[0]:
                 raise UnicodeDeclaredError() from err

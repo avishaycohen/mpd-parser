@@ -1,0 +1,9 @@
+<MPD mediaPresentationDuration="PT9S">
+  <Period start="PT4S">
+    <AdaptationSet>
+      <Representation>
+        <SegmentTemplate duration="2" media="$Number$"/>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

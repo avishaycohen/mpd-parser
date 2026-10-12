@@ -1,0 +1,9 @@
+<d:MPD xmlns:d="urn:mpeg:dash:schema:mpd:2011">
+  <d:Period duration="PT1S">
+    <d:AdaptationSet>
+      <d:Representation>
+        <d:SegmentTemplate duration="1" media="$Number$.m4s"/>
+      </d:Representation>
+    </d:AdaptationSet>
+  </d:Period>
+</d:MPD>

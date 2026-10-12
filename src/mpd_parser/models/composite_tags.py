@@ -1,8 +1,8 @@
 # pylint: disable=missing-function-docstring
 """ Module for the compelex tags such as MPD, Period and others """
-from fractions import Fraction
+from collections.abc import Iterator
+from datetime import datetime
 from functools import cached_property, lru_cache
-from math import ceil
 from xml.etree.ElementTree import Element
 
 from isodate import parse_datetime, parse_duration
@@ -15,7 +15,6 @@ from mpd_parser.attribute_parsers import (
     organize_ns,
 )
 from mpd_parser.constants import (
-    ANCESTOR_LOOKUP_STR_FORMAT,
     DERIVED_ATTRIBUTES_CACHE_SIZE,
     LOOKUP_STR_FORMAT,
     TWO_SECONDS,
@@ -35,7 +34,7 @@ from mpd_parser.models.base_tags import (
     UTCTiming,
 )
 from mpd_parser.models.segment_tags import MultipleSegmentBase, SegmentBase, SegmentList
-from mpd_parser.timeline_utils import SegmentTiming
+from mpd_parser._segments import iter_segment_urls, template_timings
 
 
 class Period(Tag):
@@ -153,6 +152,20 @@ class MPD(Tag):  # pylint: disable=too-many-public-methods
         super().__init__(element=element)
         self.encoding = encoding
         self.tag_map = {"cenc": "xlmns:cenc"}
+
+    def iter_segment_urls(
+        self, base_url: str | None = None, *, now: datetime | None = None
+    ) -> Iterator[str]:
+        """Return a single-use iterator of initialization and media URLs.
+
+        base_url is a manifest URL or a directory URL ending in '/'. Remote
+        documents default to their response URL; local references stay relative.
+        Iteration follows document order and captures current UTC on first
+        advancement, unless a timezone-aware now is supplied. Do not edit the
+        MPD tree during iteration. SegmentError subclasses report invalid or
+        unbounded descriptions when the iterator advances.
+        """
+        return iter_segment_urls(self.element, base_url, now=now)
 
     @cached_property
     def namespace(self):
@@ -323,83 +336,13 @@ class SegmentTemplate(MultipleSegmentBase):
         return self.element.attrib.get("bitstreamSwitching")
 
     @property
-    @lru_cache(maxsize=DERIVED_ATTRIBUTES_CACHE_SIZE)
     def parsed_segment_timeline(self):
-        """Calculate timing information for segments based on SegmentTemplate
+        """Return segment timings relative to the Period start.
 
-        Returns:
-            List[SegmentTiming]: List of segment timing information.
-            if there's no duration and timescale in the template, returns empty list [].
-
-        Example:
-            >>> template.duration = 2000
-            >>> template.timescale = 1000
-            >>> template.start_number = 1
-            >>> timings = TimelineUtils.get_segment_timing(template, 0)
-            >>> print(timings[0].duration)  # 2.0
-            >>> print(timings[0].start_time)  # 0.0
+        Dynamic MPDs include the segments available at the current UTC time.
+        Timings are recomputed so live windows and XML edits are reflected.
         """
-        segments = []
-        if not self.duration or not self.timescale:
-            return segments
-
-        # Get segment duration in seconds
-        segment_duration = self.duration / self.timescale
-
-        # Get relevant variables
-        start_number = self.start_number or 1
-        period_ancestor = None
-        manifest_mpd = None
-        try:
-            period_ancestor = Period(
-                self.element.xpath(ANCESTOR_LOOKUP_STR_FORMAT.format(target="Period"))[
-                    0
-                ]
-            )
-        except IndexError:
-            pass
-
-        try:
-            manifest_mpd = MPD(
-                self.element.xpath(ANCESTOR_LOOKUP_STR_FORMAT.format(target="MPD"))[0]
-            )
-        except IndexError:
-            pass
-
-        # Calculate segment count based on context
-        if period_ancestor and period_ancestor.duration is not None:
-            # Include partial final segments without floating-point rounding errors.
-            period_duration = Fraction(str(period_ancestor.duration_in_seconds))
-            segment_count = ceil(period_duration * self.timescale / self.duration)
-        elif (
-            manifest_mpd
-            and manifest_mpd.availability_start_time
-            and manifest_mpd.time_shift_buffer_depth
-        ):
-            # Live content - use time shift buffer if available
-            time_shift_buffer = manifest_mpd.time_shift_buffer_depth_in_seconds
-            segment_count = int(time_shift_buffer / segment_duration)
-        else:
-            # Dynamic content - use MPD update period
-            update_period = manifest_mpd.minimum_update_period_in_seconds
-            segment_count = int(update_period / segment_duration)
-
-        current_time = period_ancestor.start_in_seconds or 0
-        for i in range(start_number, start_number + segment_count):
-            segment = SegmentTiming(
-                start_time=current_time, duration=segment_duration, number=i
-            )
-
-            if manifest_mpd.availability_start_time:
-                segment.availability_start = (
-                    manifest_mpd.availability_start_time_in_seconds + current_time
-                )
-                segment.availability_end = segment.availability_start + segment_duration
-
-            segments.append(segment)
-            current_time += segment_duration
-
-        return segments
+        return template_timings(self.element)
 
 
 class RepresentationBase(Tag):  # pylint: disable=too-many-public-methods
@@ -549,6 +492,20 @@ class SubRepresentation(RepresentationBase):
 
 class Representation(RepresentationBase):
     """Representation tag"""
+
+    def iter_segment_urls(
+        self, base_url: str | None = None, *, now: datetime | None = None
+    ) -> Iterator[str]:
+        """Return a single-use iterator of initialization and media URLs.
+
+        base_url is a manifest URL or a directory URL ending in '/'. Remote
+        documents default to their response URL; local references stay relative.
+        Iteration follows document order and captures current UTC on first
+        advancement, unless a timezone-aware now is supplied. Do not edit the
+        MPD tree during iteration. SegmentError subclasses report invalid or
+        unbounded descriptions when the iterator advances.
+        """
+        return iter_segment_urls(self.element, base_url, now=now)
 
     @cached_property
     def id(self):

@@ -1,0 +1,12 @@
+<MPD>
+  <Period duration="PT2S">
+    <SegmentTemplate duration="1" media="$Number$"/>
+    <AdaptationSet>
+      <Representation>
+        <SegmentList>
+          <SegmentURL media="one"/>
+        </SegmentList>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

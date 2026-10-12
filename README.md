@@ -31,6 +31,41 @@ mpd = Parser.from_file(input_file)
 mpd_as_xml_string = Parser.to_string(parsed_mpd)
 ```
 
+### Segment URLs
+
+```python
+mpd = Parser.from_file("manifest.mpd")
+for url in mpd.iter_segment_urls("https://example.com/video/manifest.mpd"):
+    print(url)
+```
+
+Yields initialization and media URLs in representation and Period order.
+Supports inherited templates, timelines, explicit lists, and single-file media.
+Use `Representation.iter_segment_urls()` to enumerate one representation.
+Each call returns a single-use iterator. URLs are resolved as iteration advances;
+callers can stop early or collect the results if needed.
+
+The optional base URL is a manifest URL or a directory URL ending in `/`.
+Remote MPDs default to their final response URL; local references otherwise stay
+relative. The first `BaseURL` at each level selects a mirror. Byte ranges retain
+repeated URLs, with range metadata accessible through the existing parsed tags.
+
+Execution starts when the iterator is first advanced. Live enumeration captures
+the current UTC time then and uses it throughout that iteration. Pass a
+timezone-aware `now` to select a specific time or use a corrected server clock.
+Enumeration performs no network requests or MPD refreshes. Initialization is
+emitted only when media is available.
+
+The iterator reads the existing MPD tree without copying it. Finish or discard
+an iterator before editing the tree; create a new iterator after edits.
+
+Enumeration errors derive from `mpd_parser.exceptions.SegmentError`, a
+`ValueError` subclass. `InvalidDurationError`, `InvalidTemplateError`, and
+`InvalidTimelineError` identify invalid descriptions. `UnboundedTimelineError`
+indicates that an open-ended template lacks a finite Period or availability
+boundary. Errors arise while advancing the iterator, potentially after earlier
+URLs have been yielded.
+
 ## Overview
 A utility to parse mpeg dash mpd files quickly
 This package is heavily inspired by [mpegdash package](https://github.com/sangwonl/python-mpegdash) the main difference is that I choose to relay on lxml for parsing, and not the standard xml library.

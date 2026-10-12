@@ -13,6 +13,10 @@ from mpd_parser.parser import Parser
 from tests.conftest import touch_attributes, MANIFESTS_DIR
 
 class DummyFile(io.BytesIO):
+    def geturl(self):
+        """Return the response URL used for resolving segment references."""
+        return "https://example.com/manifest.mpd"
+
     def __enter__(self):
         return self
     def __exit__(self, exc_type, exc_val, exc_tb):

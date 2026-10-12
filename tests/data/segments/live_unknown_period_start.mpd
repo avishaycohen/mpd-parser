@@ -1,0 +1,16 @@
+<MPD type="dynamic" availabilityStartTime="2026-01-01T00:00:00Z" timeShiftBufferDepth="PT10S">
+  <Period start="PT0S">
+    <AdaptationSet>
+      <Representation id="v">
+        <SegmentTemplate duration="4" initialization="init" media="$Number$"/>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+  <Period>
+    <AdaptationSet>
+      <Representation>
+        <SegmentTemplate duration="4" media="future-$Number$"/>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

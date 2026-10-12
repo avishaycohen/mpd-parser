@@ -1,0 +1,16 @@
+<MPD>
+  <Period>
+    <AdaptationSet>
+      <Representation>
+        <SegmentTemplate duration="2" media="first-$Number$"/>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+  <Period start="PT4S" duration="PT2S">
+    <AdaptationSet>
+      <Representation>
+        <SegmentTemplate duration="2" media="second-$Number$"/>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

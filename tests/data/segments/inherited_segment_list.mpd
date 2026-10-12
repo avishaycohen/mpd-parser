@@ -1,0 +1,15 @@
+<MPD>
+  <Period>
+    <SegmentList>
+      <Initialization sourceURL="init"/>
+      <SegmentURL media="parent"/>
+    </SegmentList>
+    <AdaptationSet>
+      <Representation>
+        <SegmentList>
+          <SegmentURL media="child"/>
+        </SegmentList>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

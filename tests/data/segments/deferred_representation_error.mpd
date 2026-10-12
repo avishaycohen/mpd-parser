@@ -1,0 +1,12 @@
+<MPD>
+  <Period duration="PT1S">
+    <AdaptationSet>
+      <Representation>
+        <SegmentTemplate duration="1" media="first.m4s"/>
+      </Representation>
+      <Representation>
+        <SegmentTemplate duration="1" media="$Unknown$"/>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

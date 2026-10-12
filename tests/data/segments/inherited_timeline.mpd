@@ -1,0 +1,18 @@
+<MPD>
+  <Period duration="PT4S">
+    <AdaptationSet>
+      <SegmentTemplate timescale="10" media="$Time$" initialization="init">
+        <SegmentTimeline>
+          <S d="10" r="3"/>
+        </SegmentTimeline>
+      </SegmentTemplate>
+      <Representation>
+        <SegmentTemplate>
+          <SegmentTimeline>
+            <S d="20" r="1"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

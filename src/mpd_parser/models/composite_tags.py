@@ -1,6 +1,8 @@
 # pylint: disable=missing-function-docstring
 """ Module for the compelex tags such as MPD, Period and others """
+from fractions import Fraction
 from functools import cached_property, lru_cache
+from math import ceil
 from xml.etree.ElementTree import Element
 
 from isodate import parse_datetime, parse_duration
@@ -365,9 +367,10 @@ class SegmentTemplate(MultipleSegmentBase):
             pass
 
         # Calculate segment count based on context
-        if period_ancestor and period_ancestor.duration_in_seconds:
-            # VOD content - use period duration
-            segment_count = int(period_ancestor.duration_in_seconds / segment_duration)
+        if period_ancestor and period_ancestor.duration is not None:
+            # Include partial final segments without floating-point rounding errors.
+            period_duration = Fraction(str(period_ancestor.duration_in_seconds))
+            segment_count = ceil(period_duration * self.timescale / self.duration)
         elif (
             manifest_mpd
             and manifest_mpd.availability_start_time

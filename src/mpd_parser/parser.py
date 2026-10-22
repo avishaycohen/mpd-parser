@@ -3,6 +3,7 @@ Main module of the package, Parser class
 """
 
 import logging
+import os
 from re import Match, sub
 from urllib.request import Request, urlopen
 
@@ -117,3 +118,19 @@ class Parser:
                 a string representation of the MPD object, xml formatted dash mpeg manifest
         """
         return etree.tostring(mpd.element).decode("utf-8")
+
+    @classmethod
+    def to_file(cls, mpd: MPD, file_name: str, pretty_print: bool = True) -> None:
+        """save a given MPD tag object to a file
+
+        Args:
+                mpd: MPD object created by one of the parser factories
+                file_name (str): target file name to save the XML content to
+                pretty_print (bool): whether to pretty format the XML output
+        """
+        dir_name = os.path.dirname(file_name)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
+
+        tree = etree.ElementTree(mpd.element)
+        tree.write(file_name, encoding=mpd.encoding, xml_declaration=True, pretty_print=pretty_print)

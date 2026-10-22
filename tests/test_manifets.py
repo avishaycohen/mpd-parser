@@ -176,3 +176,16 @@ def test_from_url_error_handling(monkeypatch, exception, patch_func):
     monkeypatch.setattr("mpd_parser.parser.urlopen", dummy_urlopen)
     with raises(exception):
         Parser.from_url("http://dummy.url/manifest.mpd")
+
+
+def test_to_file(tmp_path):
+    """test the parser to_file method"""
+    mpd_xml = "<MPD><Period id='1'></Period></MPD>"
+    mpd = Parser.from_string(mpd_xml)
+    file_path = os.path.join(tmp_path, "test_output.mpd")
+    Parser.to_file(mpd, file_path)
+
+    assert os.path.exists(file_path)
+    parsed_back = Parser.from_file(file_path)
+    assert len(parsed_back.periods) == 1
+    assert parsed_back.periods[0].id == "1"

@@ -56,3 +56,58 @@ def test_segment_template_period_segment_count(
     assert [segment.number for segment in timings] == list(
         range(7, 7 + segment_count)
     )
+
+
+def test_segment_template_inheritance_from_adaptation_set():
+    """test that child SegmentTemplate inherits attributes and SegmentTimeline from parent AdaptationSet template"""
+    xml_data = """
+    <MPD xmlns="urn:mpeg:dash:schema:mpd:2011">
+        <Period>
+            <AdaptationSet>
+                <SegmentTemplate timescale="48000" presentationTimeOffset="96000" duration="1920" startNumber="10">
+                    <SegmentTimeline>
+                        <S t="0" d="1920" r="2"/>
+                    </SegmentTimeline>
+                </SegmentTemplate>
+                <Representation id="rep_audio">
+                    <SegmentTemplate media="audio_$Number$.mp4"/>
+                </Representation>
+            </AdaptationSet>
+        </Period>
+    </MPD>
+    """
+    root = etree.fromstring(xml_data.encode("utf-8"))
+    child_template_el = root.xpath(".//*[local-name()='Representation']/*[local-name()='SegmentTemplate']")[0]
+    template = SegmentTemplate(child_template_el)
+
+    assert template.timescale == 48000
+    assert template.presentation_time_offset == 96000
+    assert template.duration == 1920
+    assert template.start_number == 10
+    assert template.media == "audio_$Number$.mp4"
+    assert template.segment_timeline is not None
+    assert len(template.segment_timeline.segments) == 1
+    assert template.segment_timeline.segments[0].d == 1920
+
+
+def test_segment_template_direct_adaptation_set_attributes():
+    """test that child SegmentTemplate inherits attributes declared directly on AdaptationSet"""
+    xml_data = """
+    <MPD>
+        <Period>
+            <AdaptationSet timescale="90000" presentationTimeOffset="180000">
+                <Representation id="rep_video">
+                    <SegmentTemplate media="video_$Number$.mp4"/>
+                </Representation>
+            </AdaptationSet>
+        </Period>
+    </MPD>
+    """
+    root = etree.fromstring(xml_data.encode("utf-8"))
+    child_template_el = root.xpath(".//Representation/SegmentTemplate")[0]
+    template = SegmentTemplate(child_template_el)
+
+    assert template.timescale == 90000
+    assert template.presentation_time_offset == 180000
+    assert template.media == "video_$Number$.mp4"
+

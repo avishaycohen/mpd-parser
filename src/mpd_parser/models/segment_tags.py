@@ -37,12 +37,67 @@ class Segment(Tag):
         return get_int_value(self.element.attrib.get("r"))
 
 
+def _find_inherited_attribute(element, local_name, attrib_name):
+    """Find inherited attribute from ancestor AdaptationSet or Period."""
+    el_ns = element.tag.split('}')[0] + '}' if '}' in element.tag else ''
+    target_child_tag = f"{el_ns}{local_name}" if el_ns else local_name
+
+    for ancestor in element.iterancestors():
+        local_ancestor = ancestor.tag.split('}')[-1] if '}' in ancestor.tag else ancestor.tag
+        if local_ancestor not in ("AdaptationSet", "Period"):
+            continue
+ 
+        for child in ancestor:
+            if child is not element and child.tag == target_child_tag:
+                val = child.attrib.get(attrib_name)
+                if val is not None:
+                    return val
+
+        val = ancestor.attrib.get(attrib_name)
+        if val is not None:
+            return val
+
+        if local_ancestor == "Period":
+            break
+    return None
+
+
+def _find_inherited_element(element, local_name, child_name):
+    """Find inherited child element (e.g. SegmentTimeline) from ancestor AdaptationSet or Period."""
+    el_ns = element.tag.split('}')[0] + '}' if '}' in element.tag else ''
+    target_child_tag = f"{el_ns}{local_name}" if el_ns else local_name
+    target_subchild_tag = f"{el_ns}{child_name}" if el_ns else child_name
+
+    for ancestor in element.iterancestors():
+        local_ancestor = ancestor.tag.split('}')[-1] if '}' in ancestor.tag else ancestor.tag
+        if local_ancestor not in ("AdaptationSet", "Period"):
+            continue
+
+        for child in ancestor:
+            if child is element or child.tag != target_child_tag:
+                continue
+            for subchild in child:
+                if subchild.tag == target_subchild_tag:
+                    return subchild
+
+        if local_ancestor == "Period":
+            break
+    return None
+
+
 class SegmentBase(Tag):
     """Basic Segment tag representation"""
 
     @cached_property
     def timescale(self):
-        return get_int_value(self.element.attrib.get("timescale"))
+        val = self.element.attrib.get("timescale")
+        if val is not None:
+            return get_int_value(val)
+        local_name = self.element.tag.split('}')[-1]
+        ancestor_val = _find_inherited_attribute(self.element, local_name, "timescale")
+        if ancestor_val is not None:
+            return get_int_value(ancestor_val)
+        return 1
 
     @cached_property
     def index_range(self):
@@ -54,7 +109,14 @@ class SegmentBase(Tag):
 
     @cached_property
     def presentation_time_offset(self):
-        return get_int_value(self.element.attrib.get("presentationTimeOffset"))
+        val = self.element.attrib.get("presentationTimeOffset")
+        if val is not None:
+            return get_int_value(val)
+        local_name = self.element.tag.split('}')[-1]
+        ancestor_val = _find_inherited_attribute(self.element, local_name, "presentationTimeOffset")
+        if ancestor_val is not None:
+            return get_int_value(ancestor_val)
+        return 0
 
     @cached_property
     def availability_time_offset(self):
@@ -87,18 +149,38 @@ class MultipleSegmentBase(SegmentBase):
 
     @cached_property
     def duration(self):
-        return get_int_value(self.element.attrib.get("duration"))
+        val = self.element.attrib.get("duration")
+        if val is not None:
+            return get_int_value(val)
+        local_name = self.element.tag.split('}')[-1]
+        ancestor_val = _find_inherited_attribute(self.element, local_name, "duration")
+        if ancestor_val is not None:
+            return get_int_value(ancestor_val)
+        return None
 
     @cached_property
     def start_number(self):
-        return get_int_value(self.element.attrib.get("startNumber"))
+        val = self.element.attrib.get("startNumber")
+        if val is not None:
+            return get_int_value(val)
+        local_name = self.element.tag.split('}')[-1]
+        ancestor_val = _find_inherited_attribute(self.element, local_name, "startNumber")
+        if ancestor_val is not None:
+            return get_int_value(ancestor_val)
+        return 1
 
     @cached_property
     def segment_timeline(self):
         elements = self.element.xpath(
             LOOKUP_STR_FORMAT.format(target="SegmentTimeline")
         )
-        return SegmentTimeline(elements[0]) if elements else None
+        if elements:
+            return SegmentTimeline(elements[0])
+        local_name = self.element.tag.split('}')[-1]
+        ancestor_el = _find_inherited_element(self.element, local_name, "SegmentTimeline")
+        if ancestor_el is not None:
+            return SegmentTimeline(ancestor_el)
+        return None
 
     @cached_property
     def bitstream_switchings(self):

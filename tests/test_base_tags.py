@@ -13,9 +13,11 @@ from mpd_parser.models.base_tags import (
     AssetIdentifiers,
     BaseURL,
     ContentComponent,
+    ContentProtection,
     Descriptor,
     Event,
     EventStream,
+    PSSH,
     ProgramInfo,
     Subset,
     Tag,
@@ -215,3 +217,59 @@ def test_base_url_tag(xml_snippet, expected):
     assert base_url.availability_time_complete == expected.get(
         "availability_time_complete"
     )
+
+
+def test_content_protection_pssh_subtag():
+    """Test that cenc:pssh child element is correctly parsed as PSSH object"""
+    xml = """
+    <ContentProtection schemeIdUri="urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed"
+                       xmlns:cenc="urn:mpeg:cenc:2013">
+        <cenc:pssh>AAAAW3Bzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAADsIARIQ62dqu8s0</cenc:pssh>
+    </ContentProtection>
+    """
+    element = etree.fromstring(xml)
+    cp = ContentProtection(element)
+
+    assert cp.scheme_id_uri == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed"
+    assert cp.pssh is not None
+    assert isinstance(cp.pssh, PSSH)
+    assert cp.pssh.pssh == "AAAAW3Bzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAADsIARIQ62dqu8s0"
+    assert cp.pssh.text.strip() == "AAAAW3Bzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAADsIARIQ62dqu8s0"
+
+
+def test_content_protection_without_pssh():
+    """Test that ContentProtection without pssh subtag returns None"""
+    xml = """
+    <ContentProtection schemeIdUri="urn:mpeg:dash:mp4protection:2011" value="cenc" />
+    """
+    element = etree.fromstring(xml)
+    cp = ContentProtection(element)
+
+    assert cp.pssh is None
+    assert cp.psshs == []
+
+
+def test_content_protection_multiple_pssh():
+    """Test ContentProtection with multiple pssh tags via psshs list"""
+    xml = """
+    <ContentProtection schemeIdUri="urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed"
+                       xmlns:cenc="urn:mpeg:cenc:2013">
+        <cenc:pssh>pssh_one</cenc:pssh>
+        <cenc:pssh>pssh_two</cenc:pssh>
+    </ContentProtection>
+    """
+    element = etree.fromstring(xml)
+    cp = ContentProtection(element)
+
+    assert len(cp.psshs) == 2
+    assert cp.psshs[0].pssh == "pssh_one"
+    assert cp.psshs[1].pssh == "pssh_two"
+    assert cp.pssh.pssh == "pssh_one"
+
+
+def test_pssh_tag_direct():
+    """Test PSSH tag class directly"""
+    element = etree.fromstring("<cenc:pssh xmlns:cenc='urn:mpeg:cenc:2013'>\n  sample_pssh  \n</cenc:pssh>")
+    pssh = PSSH(element)
+    assert pssh.text == "\n  sample_pssh  \n"
+    assert pssh.pssh == "sample_pssh"

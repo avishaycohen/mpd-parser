@@ -61,12 +61,12 @@ class TextTag(Tag):
         return self.element.text
 
 
-class PSSH(Tag):
-    """PSSH tag class"""
+class PSSH(TextTag):
+    """PSSH tag class representing a Protection System Specific Header"""
 
     @cached_property
-    def pssh(self):
-        return self.element.attrib.get("pssh")
+    def pssh(self) -> Optional[str]:
+        return self.text.strip() if self.text else None
 
 
 class ContentProtection(Tag):
@@ -105,8 +105,16 @@ class ContentProtection(Tag):
         return self.element.attrib.get("cenc:default_KID")
 
     @cached_property
-    def pssh(self):
-        return PSSH(self.element.attrib.get("cenc:pssh"))
+    def pssh(self) -> Optional[PSSH]:
+        elements = self.element.xpath(LOOKUP_STR_FORMAT.format(target="pssh"))
+        return PSSH(elements[0]) if elements else None
+
+    @cached_property
+    def psshs(self):
+        return [
+            PSSH(member)
+            for member in self.element.xpath(LOOKUP_STR_FORMAT.format(target="pssh"))
+        ]
 
 
 class Descriptor(Tag):

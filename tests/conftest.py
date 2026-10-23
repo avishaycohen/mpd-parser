@@ -4,9 +4,10 @@ Conftest module for package testing
 
 from typing import Any
 
+import os
 from mpd_parser.models.base_tags import Tag
 
-MANIFESTS_DIR = "./../manifests/"
+MANIFESTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "manifests")) + "/"
 
 
 def touch_attributes(obj: Any, verbose: bool = False):

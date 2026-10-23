@@ -324,30 +324,18 @@ class SegmentTemplate(MultipleSegmentBase):
 
     @property
     @lru_cache(maxsize=DERIVED_ATTRIBUTES_CACHE_SIZE)
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     def parsed_segment_timeline(self):
-        """Calculate timing information for segments based on SegmentTemplate
+        """Calculate timing information for segments based on SegmentTemplate or SegmentTimeline
 
         Returns:
             List[SegmentTiming]: List of segment timing information.
-            if there's no duration and timescale in the template, returns empty list [].
-
-        Example:
-            >>> template.duration = 2000
-            >>> template.timescale = 1000
-            >>> template.start_number = 1
-            >>> timings = TimelineUtils.get_segment_timing(template, 0)
-            >>> print(timings[0].duration)  # 2.0
-            >>> print(timings[0].start_time)  # 0.0
+            if there's no duration/timeline and timescale in the template, returns empty list [].
         """
         segments = []
-        if not self.duration or not self.timescale:
-            return segments
-
-        # Get segment duration in seconds
-        segment_duration = self.duration / self.timescale
+        timescale = self.timescale or 1.0
 
         # Get relevant variables
-        start_number = self.start_number or 1
         period_ancestor = None
         manifest_mpd = None
         try:
@@ -365,6 +353,85 @@ class SegmentTemplate(MultipleSegmentBase):
             )
         except IndexError:
             pass
+
+        start_number = self.start_number or 1
+
+        # Check if SegmentTimeline is present
+        if self.segment_timeline:
+            current_number = start_number
+            s_elements = self.segment_timeline.segments
+            current_t = 0
+            pto = self.presentation_time_offset or 0
+            period_start_sec = (
+                period_ancestor.start_in_seconds
+                if period_ancestor and period_ancestor.start_in_seconds
+                else 0.0
+            )
+            timeshift_buffer_sec = (
+                manifest_mpd.time_shift_buffer_depth_in_seconds
+                if manifest_mpd and manifest_mpd.time_shift_buffer_depth
+                else 0.0
+            )
+
+            for idx, s in enumerate(s_elements):
+                if s.t is not None:
+                    current_t = s.t
+
+                duration = s.d
+                if not duration:
+                    continue
+
+                r = s.r if s.r is not None else 0
+                if r >= 0:
+                    segment_count_in_run = r + 1
+                else:
+                    # Negative repeat count (e.g. r = -1)
+                    if idx + 1 < len(s_elements) and s_elements[idx + 1].t is not None:
+                        next_t = s_elements[idx + 1].t
+                        segment_count_in_run = round((next_t - current_t) / duration)
+                    else:
+                        # Last element: repeat until period end if VOD
+                        if period_ancestor and period_ancestor.duration_in_seconds:
+                            target_end_t = (period_ancestor.duration_in_seconds * timescale) + pto
+                            segment_count_in_run = ceil((target_end_t - current_t) / duration)
+                        else:
+                            # Dynamic/live stream: generate at least 1 segment
+                            segment_count_in_run = 1
+
+                segment_count_in_run = min(max(1 if r < 0 else 0, segment_count_in_run), 100000)
+
+                for _ in range(segment_count_in_run):
+                    # start_time relative to Period start: (current_t - PTO) / timescale
+                    start_time = (current_t - pto) / timescale
+                    duration_seconds = duration / timescale
+
+                    segment = SegmentTiming(
+                        start_time=start_time,
+                        duration=duration_seconds,
+                        number=current_number,
+                        time=current_t,
+                    )
+
+                    if manifest_mpd and manifest_mpd.availability_start_time:
+                        ast = manifest_mpd.availability_start_time_in_seconds
+                        # SAST = AST + Period@start + start_time_in_period
+                        segment.availability_start = ast + period_start_sec + start_time
+                        # SAET = SAST + timeShiftBufferDepth + duration
+                        segment.availability_end = (
+                            segment.availability_start + timeshift_buffer_sec + duration_seconds
+                        )
+
+                    segments.append(segment)
+                    current_number += 1
+                    current_t += duration
+
+            return segments
+
+        # Static duration template calculation fallback
+        if not self.duration or not self.timescale:
+            return segments
+
+        segment_duration = self.duration / self.timescale
 
         # Calculate segment count based on context
         if period_ancestor and period_ancestor.duration is not None:

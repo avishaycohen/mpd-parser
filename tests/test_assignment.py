@@ -1,5 +1,6 @@
 """ Test module for assignment functionallity """
 
+import os
 import pytest
 from lxml import etree
 
@@ -7,10 +8,13 @@ from mpd_parser.models.base_tags import Subset
 from mpd_parser.parser import Parser
 
 
+from tests.conftest import MANIFESTS_DIR
+
+
 @pytest.mark.parametrize(
     "input_file",
     [
-        "./../manifests/bigBuckBunny-onDemend.mpd",
+        os.path.join(MANIFESTS_DIR, "bigBuckBunny-onDemend.mpd"),
     ],
 )
 class TestTag:

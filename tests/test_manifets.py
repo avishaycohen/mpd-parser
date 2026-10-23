@@ -23,7 +23,7 @@ def dummy_urlopen(url):
 
 
 @mark.parametrize("input_file", [
-    "./../manifests/bigBuckBunny-onDemend.mpd",
+    os.path.join(MANIFESTS_DIR, "bigBuckBunny-onDemend.mpd"),
 ])
 def test_mpd_tag(input_file):
     """ Test that parser works and create MPD object """
@@ -45,7 +45,7 @@ def test_mpd_tag(input_file):
 
 
 @mark.parametrize("input_file", [
-    "./../manifests/bigBuckBunny-onDemend.mpd",
+    os.path.join(MANIFESTS_DIR, "bigBuckBunny-onDemend.mpd"),
 ])
 def test_parse_from_file_mpd_tag(input_file):
     """ Test that parser works and create MPD object """
@@ -69,7 +69,8 @@ def test_parse_from_url_mpd_tag():
         def log_message(self, format, *args):
             pass
 
-    Handler = lambda *args, **kwargs: QuietHandler(*args, directory="./../", **kwargs)
+    project_root = os.path.dirname(MANIFESTS_DIR.rstrip("/\\"))
+    Handler = lambda *args, **kwargs: QuietHandler(*args, directory=project_root, **kwargs)
     server = HTTPServer(('127.0.0.1', 0), Handler)
     port = server.server_port
     thread = threading.Thread(target=server.serve_forever)
@@ -116,7 +117,7 @@ def test_touch_all_manifest_properties(input_file, parsing_type):
 
 
 @mark.parametrize("input_file", [
-    "./../manifests/bigBuckBunny-onDemend.mpd",
+    os.path.join(MANIFESTS_DIR, "bigBuckBunny-onDemend.mpd"),
 ])
 def test_to_string(input_file):
     """ test the converter from MPD object to string xml """

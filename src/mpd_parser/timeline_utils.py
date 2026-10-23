@@ -1,8 +1,7 @@
 """ Utilities to parse, compute and handle time and duration related information in the mpd file """
 
-from datetime import datetime
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -14,5 +13,6 @@ class SegmentTiming:
     start_time: float  # in seconds from period start
     duration: float  # in seconds
     number: int  # segment number in sequence
-    availability_start: Optional[datetime] = None  # for live streams
-    availability_end: Optional[datetime] = None  # for live streams
+    time: Optional[int] = None  # raw timescale ticks for $Time$ templates
+    availability_start: Optional[float] = None  # for live streams (epoch seconds)
+    availability_end: Optional[float] = None  # for live streams (epoch seconds)
